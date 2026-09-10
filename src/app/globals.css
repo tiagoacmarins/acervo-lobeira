@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+/*
+ * Paleta oficial do Instituto Lobeira (guia de marca).
+ * Isso gera classes Tailwind automaticamente: bg-oliva, text-ocre,
+ * border-lilas, etc. — veja https://tailwindcss.com/docs/theme
+ */
+@theme {
+  --color-oliva: #484a1f; /* Verde Oliva — base, títulos, cor primária */
+  --color-lilas: #8b7ba6; /* Lilás Lobeira — destaque, flor da marca */
+  --color-ocre: #a76c3b; /* Ocre Cerrado — palavra "Instituto", CTAs terrosos */
+  --color-creme: #fdf3e9; /* Creme Claro — fundo principal */
+  --color-grafite: #2b2b2b; /* Cinza Escuro — texto */
+  --color-musgo: #6f7247; /* Verde Musgo — apoio / fundos secundários */
+  --color-areia: #d8c4a6; /* Areia Cerrado — neutros */
+  --color-lavanda: #c8bdd6; /* Lavanda Suave — acento suave */
+  --color-terroso: #ebdcc6; /* Terroso Claro — texturas */
+  --color-cinza: #666666; /* Cinza Neutro — texto secundário */
+  --color-dourado: #d4af37; /* Dourado — só sobre fundo escuro */
+}
+
+/*
+ * Fontes da marca (carregadas via next/font/google em layout.tsx e
+ * expostas aqui como variáveis CSS).
+ * - font-display -> Fredoka (títulos e destaques)
+ * - font-sans    -> Raleway (texto corrido, é a fonte padrão do corpo)
+ * - font-wordmark -> Quicksand (a palavra "Lobeira" no logotipo em texto)
+ */
+@theme inline {
+  --font-display: var(--font-fredoka);
+  --font-sans: var(--font-raleway);
+  --font-wordmark: var(--font-quicksand);
+}
+
+body {
+  background: var(--color-creme);
+  color: var(--color-grafite);
+  font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+}
+
+/* Acessibilidade: indicador de foco sempre visível para quem navega
+   pelo teclado (WCAG 2.4.7), sem aparecer num clique de mouse comum. */
+:focus-visible {
+  outline: 2px solid var(--color-oliva);
+  outline-offset: 2px;
+}
+
+/* Respeita quem pediu pro sistema operacional reduzir animações
+   (WCAG 2.3.3). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
