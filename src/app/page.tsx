@@ -87,10 +87,10 @@ export default async function Home() {
                 Explorar materiais
               </Link>
               <Link
-                href="/assinar"
+                href="/registrar"
                 className="rounded-md border border-ocre px-6 py-3 font-medium text-ocre transition-colors duration-200 hover:bg-terroso"
               >
-                Assinar o Acervo
+                Criar conta grátis
               </Link>
             </div>
           </div>
@@ -205,28 +205,6 @@ export default async function Home() {
         </Container>
       </section>
 
-      {/* Chamada de assinatura */}
-      <section className="bg-oliva py-16 text-creme">
-        <Container className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="font-display text-2xl font-semibold">
-              Acesso completo ao Acervo por R$ {SITE.precoAssinaturaMensal.toFixed(2).replace(".", ",")}/mês
-            </h2>
-            <p className="mt-2 max-w-xl text-creme/85">
-              Todos os materiais do Acervo, organizados por disciplina e
-              sempre atualizados, em um só lugar. Quem já é aluno de um curso
-              elegível do Instituto tem acesso completo, sem pagar de novo.
-            </p>
-          </div>
-          <Link
-            href="/assinar"
-            className="shrink-0 rounded-md bg-dourado px-6 py-3 font-semibold text-oliva transition-colors duration-200 hover:bg-dourado/90"
-          >
-            Quero assinar
-          </Link>
-        </Container>
-      </section>
-
       {/* Chamada de cursos */}
       <section className="py-16">
         <Container className="flex flex-col items-start gap-6 rounded-2xl border border-areia bg-terroso p-8 sm:flex-row sm:items-center sm:justify-between">
@@ -235,8 +213,8 @@ export default async function Home() {
               Quer ir além do Acervo?
             </h2>
             <p className="mt-2 max-w-xl text-grafite">
-              Conheça os cursos do Instituto Lobeira de Ensino. Quem está
-              matriculado tem acesso completo ao Acervo incluso.
+              Conheça os cursos do Instituto Lobeira de Ensino e aprofunde o
+              que você estudou aqui, com aulas e acompanhamento.
             </p>
           </div>
           <a

@@ -39,6 +39,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const { data: auth } = await supabase.auth.getUser();
   const userId = auth.user?.id ?? null;
 
+  // O Acervo é gratuito, mas baixar exige conta (gratuita).
+  if (!userId) {
+    const entrar = new URL(`${origin}/entrar`);
+    entrar.searchParams.set("next", `/materiais/${slug}`);
+    entrar.searchParams.set("mensagem", "Entre ou crie sua conta grátis para baixar este material.");
+    return NextResponse.redirect(entrar.toString());
+  }
+
   const regra = regraEfetiva(material.regra_acesso);
   const permitido = podeAcessarArquivo(regra, SEM_ENTITLEMENTS);
 

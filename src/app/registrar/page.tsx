@@ -6,15 +6,17 @@ import { signUpAction } from "@/lib/actions/auth";
 export const metadata: Metadata = { title: "Criar conta" };
 
 export default async function RegistrarPage(props: PageProps<"/registrar">) {
-  const { erro } = await props.searchParams;
+  const { erro, next } = await props.searchParams;
+  const destino = typeof next === "string" && next.startsWith("/") && !next.startsWith("//") ? next : "";
 
   return (
     <AuthCard
       titulo="Criar conta"
-      subtitulo="Grátis. Dá acesso aos materiais públicos e é o primeiro passo para assinar o Acervo."
+      subtitulo="Grátis. Com a conta você baixa os materiais do Acervo, salva favoritos e acompanha seu histórico."
       erro={typeof erro === "string" ? erro : undefined}
     >
       <form action={signUpAction} className="flex flex-col gap-4">
+        {destino && <input type="hidden" name="next" value={destino} />}
         <label className="flex flex-col gap-1 text-sm text-grafite">
           Nome completo
           <input
@@ -55,7 +57,7 @@ export default async function RegistrarPage(props: PageProps<"/registrar">) {
 
       <p className="mt-6 text-center text-sm text-cinza">
         Já tem conta?{" "}
-        <Link href="/entrar" className="text-oliva underline">
+        <Link href={destino ? `/entrar?next=${encodeURIComponent(destino)}` : "/entrar"} className="text-oliva underline">
           Entrar
         </Link>
       </p>
