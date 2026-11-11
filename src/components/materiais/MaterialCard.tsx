@@ -2,6 +2,7 @@ import Link from "next/link";
 import AccessBadge from "@/components/AccessBadge";
 import DemoBadge from "@/components/DemoBadge";
 import { TIPO_MATERIAL_LABELS } from "@/lib/labels";
+import { regraEfetiva } from "@/lib/access";
 import type { MaterialResumo } from "@/lib/data/materiais";
 
 export default function MaterialCard({ material }: { material: MaterialResumo }) {
@@ -23,7 +24,7 @@ export default function MaterialCard({ material }: { material: MaterialResumo })
 
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div className="flex flex-wrap items-center gap-1.5">
-          <AccessBadge regraAcesso={material.regra_acesso} />
+          <AccessBadge regraAcesso={regraEfetiva(material.regra_acesso)} />
           {material.is_demo && <DemoBadge />}
         </div>
 
