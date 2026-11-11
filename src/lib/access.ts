@@ -74,3 +74,12 @@ export function tipoArquivoPermitido(regraAcesso: string): "pdf" | "preview" {
 export function exigeEntitlement(regraAcesso: string): boolean {
   return regraAcesso === "exclusivo_assinante" || regraAcesso === "exclusivo_aluno";
 }
+
+/**
+ * O Acervo é 100% gratuito: toda regra de acesso é tratada como
+ * "publico", exceto "indisponivel", que continua indisponível.
+ * (As regras antigas continuam gravadas no banco, só não são mais usadas.)
+ */
+export function regraEfetiva(regraAcesso: string): "publico" | "indisponivel" {
+  return regraAcesso === "indisponivel" ? "indisponivel" : "publico";
+}

@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { obterEntitlements, podeAcessarArquivo, tipoArquivoPermitido, exigeEntitlement } from "@/lib/access";
+import { podeAcessarArquivo, tipoArquivoPermitido, regraEfetiva, SEM_ENTITLEMENTS } from "@/lib/access";
 
 /**
  * Download/visualização segura de um material.
@@ -9,7 +9,7 @@ import { obterEntitlements, podeAcessarArquivo, tipoArquivoPermitido, exigeEntit
  * Ninguém baixa o arquivo "direto" — tudo passa por aqui:
  * 1. Confirma que o material existe e está publicado (via RLS normal).
  * 2. Decide se ESTE usuário (ou visitante) pode acessar o arquivo,
- *    com base na regra de acesso do material + assinatura/matrícula.
+ *    (o Acervo é gratuito: só materiais "indisponível" são bloqueados).
  * 3. Só então usa a chave service_role (que ignora RLS) pra pegar o
  *    caminho do arquivo no Storage e gerar uma URL assinada, válida
  *    por 60 segundos.
@@ -39,32 +39,26 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const { data: auth } = await supabase.auth.getUser();
   const userId = auth.user?.id ?? null;
 
-  if (exigeEntitlement(material.regra_acesso) && !userId) {
-    return NextResponse.redirect(
-      `${origin}/entrar?erro=${encodeURIComponent("Entre na sua conta para acessar este material.")}`,
-    );
-  }
-
-  const entitlements = await obterEntitlements(userId);
-  const permitido = podeAcessarArquivo(material.regra_acesso, entitlements);
+  const regra = regraEfetiva(material.regra_acesso);
+  const permitido = podeAcessarArquivo(regra, SEM_ENTITLEMENTS);
 
   // Registro de auditoria da checagem (não decide nada, só documenta).
   await supabase.from("verificacoes_acesso").insert({
     user_id: userId,
     material_id: material.id,
-    regra_avaliada: material.regra_acesso,
+    regra_avaliada: regra,
     permitido,
-    motivo: permitido ? "acesso liberado" : "sem assinatura/matrícula compatível com a regra do material",
+    motivo: permitido ? "acesso liberado" : "material indisponível",
   });
 
   if (!permitido) {
     return NextResponse.redirect(
-      `${paginaMaterial}?erro=${encodeURIComponent("Este material é exclusivo. Assine o Acervo ou entre com sua conta de aluno.")}`,
+      `${paginaMaterial}?erro=${encodeURIComponent("Este material está indisponível temporariamente.")}`,
     );
   }
 
   const admin = createAdminClient();
-  const tipoDesejado = tipoArquivoPermitido(material.regra_acesso);
+  const tipoDesejado = tipoArquivoPermitido(regra);
 
   const { data: arquivo } = await admin
     .from("arquivos")

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import Container from "@/components/Container";
 import AccessBadge from "@/components/AccessBadge";
@@ -9,7 +8,7 @@ import FavoritoButton from "@/components/FavoritoButton";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
 import { buscarMaterialPorSlug, materialTemArquivo } from "@/lib/data/materiais";
-import { obterEntitlements, podeAcessarArquivo, tipoArquivoPermitido } from "@/lib/access";
+import { podeAcessarArquivo, tipoArquivoPermitido, regraEfetiva, SEM_ENTITLEMENTS } from "@/lib/access";
 import { createClient } from "@/lib/supabase/server";
 import { TIPO_MATERIAL_LABELS } from "@/lib/labels";
 import { learningResourceSchema } from "@/lib/seo/schemas";
@@ -47,9 +46,9 @@ export default async function MaterialPage(props: PageProps<"/materiais/[slug]">
   const { data: auth } = await supabase.auth.getUser();
   const userId = auth.user?.id ?? null;
 
-  const entitlements = await obterEntitlements(userId);
-  const permitido = podeAcessarArquivo(material.regra_acesso, entitlements);
-  const tipoDesejado = tipoArquivoPermitido(material.regra_acesso);
+  const regra = regraEfetiva(material.regra_acesso);
+  const permitido = podeAcessarArquivo(regra, SEM_ENTITLEMENTS);
+  const tipoDesejado = tipoArquivoPermitido(regra);
   const arquivoDisponivel = permitido && (await materialTemArquivo(material.id, tipoDesejado));
 
   let favoritadoInicial = false;
@@ -83,7 +82,7 @@ export default async function MaterialPage(props: PageProps<"/materiais/[slug]">
       <div className="mt-4 grid gap-10 lg:grid-cols-[2fr_1fr]">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <AccessBadge regraAcesso={material.regra_acesso} />
+            <AccessBadge regraAcesso={regra} />
             <span className="text-xs font-medium uppercase tracking-wide text-cinza">
               {TIPO_MATERIAL_LABELS[material.tipo] ?? "Material"}
             </span>
@@ -148,26 +147,10 @@ export default async function MaterialPage(props: PageProps<"/materiais/[slug]">
             </>
           ) : (
             <>
-              <p className="font-display text-lg text-oliva">Conteúdo exclusivo</p>
+              <p className="font-display text-lg text-oliva">Indisponível no momento</p>
               <p className="mt-2 text-sm text-grafite">
-                Este material é <strong>{TIPO_MATERIAL_LABELS[material.tipo]?.toLowerCase()}</strong> de
-                acesso restrito. Assine o Acervo ou entre com sua conta de aluno do Instituto para
-                liberar o arquivo completo.
+                Este material está indisponível temporariamente. Volte em breve.
               </p>
-              <div className="mt-4 flex flex-col gap-2">
-                <Link
-                  href="/assinar"
-                  className="rounded-md bg-oliva px-4 py-2 text-center text-sm font-medium text-creme transition-colors duration-200 hover:bg-oliva/90"
-                >
-                  Assinar o Acervo
-                </Link>
-                <Link
-                  href="/entrar"
-                  className="rounded-md border border-oliva px-4 py-2 text-center text-sm font-medium text-oliva transition-colors duration-200 hover:bg-creme"
-                >
-                  Já tenho conta
-                </Link>
-              </div>
             </>
           )}
         </aside>
