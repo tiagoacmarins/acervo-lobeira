@@ -10,7 +10,6 @@ const PAGINAS_ESTATICAS: { caminho: string; prioridade: number; frequencia: Meta
   { caminho: "/materiais", prioridade: 0.9, frequencia: "daily" },
   { caminho: "/disciplinas", prioridade: 0.8, frequencia: "weekly" },
   { caminho: "/artigos", prioridade: 0.8, frequencia: "daily" },
-  { caminho: "/assinar", prioridade: 0.7, frequencia: "monthly" },
   { caminho: "/sobre", prioridade: 0.5, frequencia: "monthly" },
   { caminho: "/contato", prioridade: 0.5, frequencia: "monthly" },
   { caminho: "/privacidade", prioridade: 0.2, frequencia: "yearly" },

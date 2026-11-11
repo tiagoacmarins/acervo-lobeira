@@ -7,6 +7,12 @@ function siteUrl() {
   return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 }
 
+/** Só aceita caminhos internos (ex.: /materiais/x) — evita redirecionar para outro site. */
+function destinoSeguro(valor: FormDataEntryValue | null, padrao: string) {
+  const v = String(valor ?? "");
+  return v.startsWith("/") && !v.startsWith("//") ? v : padrao;
+}
+
 function traduzErro(msg: string) {
   if (msg.includes("Invalid login credentials")) return "E-mail ou senha incorretos.";
   if (msg.includes("User already registered")) return "Já existe uma conta com este e-mail.";
@@ -18,20 +24,22 @@ function traduzErro(msg: string) {
 export async function signInAction(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
   const senha = String(formData.get("senha") ?? "");
+  const next = destinoSeguro(formData.get("next"), "/minha-conta");
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password: senha });
 
   if (error) {
-    redirect(`/entrar?erro=${encodeURIComponent(traduzErro(error.message))}`);
+    redirect(`/entrar?erro=${encodeURIComponent(traduzErro(error.message))}&next=${encodeURIComponent(next)}`);
   }
-  redirect("/minha-conta");
+  redirect(next);
 }
 
 export async function signUpAction(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
   const senha = String(formData.get("senha") ?? "");
   const nome = String(formData.get("nome") ?? "").trim();
+  const next = destinoSeguro(formData.get("next"), "/minha-conta");
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signUp({
@@ -39,12 +47,12 @@ export async function signUpAction(formData: FormData) {
     password: senha,
     options: {
       data: { nome_completo: nome },
-      emailRedirectTo: `${siteUrl()}/auth/confirm?next=/minha-conta`,
+      emailRedirectTo: `${siteUrl()}/auth/confirm?next=${encodeURIComponent(next)}`,
     },
   });
 
   if (error) {
-    redirect(`/registrar?erro=${encodeURIComponent(traduzErro(error.message))}`);
+    redirect(`/registrar?erro=${encodeURIComponent(traduzErro(error.message))}&next=${encodeURIComponent(next)}`);
   }
   redirect("/registrar/verifique-seu-email");
 }

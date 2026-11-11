@@ -25,7 +25,7 @@ export async function salvarMaterialAction(formData: FormData) {
   const especie = String(formData.get("especie") ?? "").trim() || null;
   const disciplinaId = String(formData.get("disciplina_id") ?? "") || null;
   const autorNome = String(formData.get("autor_nome") ?? "");
-  const regraAcesso = String(formData.get("regra_acesso") ?? "exclusivo_assinante");
+  const regraAcesso = String(formData.get("regra_acesso") ?? "publico");
   const status = String(formData.get("status") ?? "rascunho");
 
   if (!titulo) {

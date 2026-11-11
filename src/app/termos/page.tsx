@@ -20,9 +20,8 @@ export default async function TermosPage() {
 
       <h2>1. O que é o Acervo Lobeira</h2>
       <p>
-        Uma plataforma de materiais de estudo de Medicina Veterinária. Parte do conteúdo é
-        gratuito; parte é exclusiva para assinantes ou para alunos matriculados em cursos
-        elegíveis do Instituto.
+        Uma plataforma de materiais de estudo de Medicina Veterinária. Todo o conteúdo é
+        gratuito. Para baixar os materiais, basta criar uma conta gratuita.
       </p>
 
       <h2>2. Sua conta</h2>

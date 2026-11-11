@@ -15,7 +15,6 @@ const exploreLinks = [
   { href: "/materiais", label: "Materiais" },
   { href: "/disciplinas", label: "Disciplinas" },
   { href: "/artigos", label: "Biblioteca de Artigos" },
-  { href: "/assinar", label: "Assinar o Acervo" },
 ];
 
 export default async function Footer() {

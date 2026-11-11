@@ -118,7 +118,26 @@ export default async function MaterialPage(props: PageProps<"/materiais/[slug]">
         </div>
 
         <aside className="h-fit rounded-2xl border border-areia bg-terroso p-6">
-          {arquivoDisponivel ? (
+          {arquivoDisponivel && !userId ? (
+            <>
+              <p className="font-display text-lg text-oliva">Material gratuito</p>
+              <p className="mt-2 text-sm text-grafite">
+                Para baixar, entre ou crie sua conta grátis. Leva menos de um minuto.
+              </p>
+              <a
+                href={`/entrar?next=${encodeURIComponent(`/materiais/${material.slug}`)}`}
+                className="mt-4 inline-block w-full rounded-md bg-oliva px-4 py-2.5 text-center text-sm font-medium text-creme transition-colors duration-200 hover:bg-oliva/90"
+              >
+                Entrar para baixar
+              </a>
+              <a
+                href={`/registrar?next=${encodeURIComponent(`/materiais/${material.slug}`)}`}
+                className="mt-2 inline-block w-full rounded-md border border-oliva px-4 py-2.5 text-center text-sm font-medium text-oliva transition-colors duration-200 hover:bg-creme"
+              >
+                Criar conta grátis
+              </a>
+            </>
+          ) : arquivoDisponivel ? (
             <>
               <p className="font-display text-lg text-oliva">
                 {tipoDesejado === "preview" ? "Prévia disponível" : "Arquivo disponível"}
@@ -126,7 +145,7 @@ export default async function MaterialPage(props: PageProps<"/materiais/[slug]">
               <p className="mt-2 text-sm text-grafite">
                 {tipoDesejado === "preview"
                   ? "Este material permite visualização, mas não download do arquivo completo."
-                  : "Você tem acesso a este material. O link abre numa aba nova e expira em instantes, por segurança."}
+                  : "O link abre numa aba nova e expira em instantes, por segurança."}
               </p>
               <a
                 href={`/materiais/${material.slug}/download`}

@@ -23,8 +23,7 @@ export default async function DireitosAutoraisPage() {
 
       <h2>O que você pode fazer</h2>
       <p>
-        Usar os materiais para seu estudo pessoal, dentro das regras de acesso de cada um
-        (gratuito, exclusivo assinante, exclusivo aluno etc., indicadas na página do material).
+        Usar os materiais para seu estudo pessoal, conforme indicado na página de cada material.
       </p>
 
       <h2>O que não é permitido</h2>

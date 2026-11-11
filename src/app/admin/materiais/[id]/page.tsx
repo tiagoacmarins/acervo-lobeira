@@ -94,9 +94,9 @@ export default async function AdminMaterialFormPage(props: PageProps<"/admin/mat
         <div className="grid grid-cols-2 gap-4">
           <label className={campoLabel}>
             Regra de acesso
-            <select name="regra_acesso" defaultValue={material?.regra_acesso ?? "exclusivo_assinante"} className={campoInput}>
-              {Object.entries(REGRA_ACESSO_LABELS).map(([valor, label]) => (
-                <option key={valor} value={valor}>{label}</option>
+            <select name="regra_acesso" defaultValue={material?.regra_acesso === "indisponivel" ? "indisponivel" : "publico"} className={campoInput}>
+              {(["publico", "indisponivel"] as const).map((valor) => (
+                <option key={valor} value={valor}>{REGRA_ACESSO_LABELS[valor]}</option>
               ))}
             </select>
           </label>

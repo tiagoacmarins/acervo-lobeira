@@ -6,7 +6,8 @@ import { signInAction } from "@/lib/actions/auth";
 export const metadata: Metadata = { title: "Entrar" };
 
 export default async function EntrarPage(props: PageProps<"/entrar">) {
-  const { erro, mensagem } = await props.searchParams;
+  const { erro, mensagem, next } = await props.searchParams;
+  const destino = typeof next === "string" && next.startsWith("/") && !next.startsWith("//") ? next : "";
 
   return (
     <AuthCard
@@ -16,6 +17,7 @@ export default async function EntrarPage(props: PageProps<"/entrar">) {
       mensagem={typeof mensagem === "string" ? mensagem : undefined}
     >
       <form action={signInAction} className="flex flex-col gap-4">
+        {destino && <input type="hidden" name="next" value={destino} />}
         <label className="flex flex-col gap-1 text-sm text-grafite">
           E-mail
           <input
@@ -52,7 +54,7 @@ export default async function EntrarPage(props: PageProps<"/entrar">) {
 
       <p className="mt-6 text-center text-sm text-cinza">
         Ainda não tem conta?{" "}
-        <Link href="/registrar" className="text-oliva underline">
+        <Link href={destino ? `/registrar?next=${encodeURIComponent(destino)}` : "/registrar"} className="text-oliva underline">
           Cadastre-se
         </Link>
       </p>

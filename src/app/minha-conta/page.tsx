@@ -4,13 +4,9 @@ import { redirect } from "next/navigation";
 import Container from "@/components/Container";
 import { createClient } from "@/lib/supabase/server";
 import { signOutAction } from "@/lib/actions/auth";
-import { buscarAssinaturaAtiva, buscarMatriculaAtiva, listarFavoritos, listarHistorico } from "@/lib/data/conta";
+import { buscarMatriculaAtiva, listarFavoritos, listarHistorico } from "@/lib/data/conta";
 
 export const metadata: Metadata = { title: "Minha Conta" };
-
-function centavosParaReais(centavos: number) {
-  return (centavos / 100).toFixed(2).replace(".", ",");
-}
 
 export default async function MinhaContaPage() {
   const supabase = await createClient();
@@ -22,9 +18,8 @@ export default async function MinhaContaPage() {
 
   const userId = data.user.id;
 
-  const [{ data: perfil }, assinatura, matricula, favoritos, historico] = await Promise.all([
+  const [{ data: perfil }, matricula, favoritos, historico] = await Promise.all([
     supabase.from("profiles").select("nome_completo, role").eq("id", userId).single(),
-    buscarAssinaturaAtiva(userId),
     buscarMatriculaAtiva(userId),
     listarFavoritos(userId),
     listarHistorico(userId),
@@ -56,22 +51,6 @@ export default async function MinhaContaPage() {
           <p className="font-display text-lg text-oliva">Acesso</p>
 
           <div className="mt-3">
-            <p className="text-sm text-cinza">Assinatura do Acervo</p>
-            {assinatura ? (
-              <p className="font-medium text-oliva">
-                Ativa
-                {assinatura.plano
-                  ? ` — ${assinatura.plano.nome} (R$ ${centavosParaReais(assinatura.plano.preco_centavos)}/mês)`
-                  : ""}
-              </p>
-            ) : (
-              <p className="font-medium text-grafite">
-                Sem assinatura ativa. <Link href="/assinar" className="text-ocre underline">Assinar agora</Link>
-              </p>
-            )}
-          </div>
-
-          <div className="mt-4">
             <p className="text-sm text-cinza">Matrícula em curso do Instituto</p>
             {matricula ? (
               <p className="font-medium text-oliva">
